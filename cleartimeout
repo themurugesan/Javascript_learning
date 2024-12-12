@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>JavaScript setTimeout() with ClearTimeout</h2>
+
+    <p id="demo">I will display .</p>
+
+    <button onclick="clearTimers()">Stop Timer</button>
+
+    <script>
+      let timeout1, timeout2, timeout3;
+
+      timeout1 = setTimeout(myTimeout1, 2000);
+
+      function myTimeout1() {
+        document.getElementById("demo").innerHTML = "1 seconds";
+        timeout2 = setTimeout(myTimeout2, 3000);
+      }
+
+      function myTimeout2() {
+        document.getElementById("demo").innerHTML = "3 seconds";
+        timeout3 = setTimeout(myTimeout3, 5000);
+      }
+
+      function myTimeout3() {
+        document.getElementById("demo").innerHTML = "5 seconds";
+      }
+
+      function clearTimers() {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearTimeout(timeout3);
+
+        document.getElementById("demo").innerHTML = "Timers stopped";
+      }
+    </script>
+  </body>
+</html>
