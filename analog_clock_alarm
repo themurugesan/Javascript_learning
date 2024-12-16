@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analog Clock with Alarm</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+        color: #100f0f;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #646161;
+        flex-direction: column;
+      }
+
+      .container {
+        position: relative;
+      }
+
+      .clock {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background-color: rgb(243, 239, 239);
+        border: 6px solid rgb(247, 247, 247);
+        box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .clock span {
+        position: absolute;
+        transform: rotate(calc(30deg * var(--i)));
+        inset: 12px;
+        text-align: center;
+      }
+
+      .clock span b {
+        transform: rotate(calc(-30deg * var(--i)));
+        display: inline-block;
+        font-size: 20px;
+      }
+
+      .clock::before {
+        content: '';
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #fff;
+        z-index: 2;
+      }
+
+      .hand {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 50%;
+        left: 50%;
+        transform-origin: 50% 100%;
+      }
+
+      .hand i {
+        position: absolute;
+        background-color: var(--clr);
+        width: 4px;
+        height: var(--h);
+        border-radius: 8px;
+        top: -50%;
+      }
+
+      .alarm-input {
+        margin-top: 20px;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+      }
+
+      .alarm-btn {
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #ff3d58;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+
+      .alarm-btn:disabled {
+        background-color: gray;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="clock">
+        <div style="--clr: #ff3d58; --h: 74px" id="hour" class="hand">
+          <i></i>
+        </div>
+        <div style="--clr: #00a6ff; --h: 84px" id="min" class="hand">
+          <i></i>
+        </div>
+        <div style="--clr: #2582b4; --h: 94px" id="sec" class="hand">
+          <i></i>
+        </div>
+
+        <span style="--i: 1"><b>1</b></span>
+        <span style="--i: 2"><b>2</b></span>
+        <span style="--i: 3"><b>3</b></span>
+        <span style="--i: 4"><b>4</b></span>
+        <span style="--i: 5"><b>5</b></span>
+        <span style="--i: 6"><b>6</b></span>
+        <span style="--i: 7"><b>7</b></span>
+        <span style="--i: 8"><b>8</b></span>
+        <span style="--i: 9"><b>9</b></span>
+        <span style="--i: 10"><b>10</b></span>
+        <span style="--i: 11"><b>11</b></span>
+        <span style="--i: 12"><b>12</b></span>
+      </div>
+      <!-- Alarm input section -->
+      <input type="time" id="alarmTime" class="alarm-input" />
+      <button id="setAlarm" class="alarm-btn">Set Alarm</button>
+    </div>
+
+    <script>
+      let hr = document.getElementById('hour');
+      let min = document.getElementById('min');
+      let sec = document.getElementById('sec');
+      let setAlarmBtn = document.getElementById('setAlarm');
+      let alarmTimeInput = document.getElementById('alarmTime');
+      let alarmTime = null;
+      let alarmAudio = new Audio('thala.mp3'); // Alarm sound (ensure you have a correct file path)
+
+      function displayTime() {
+        let date = new Date();
+        let hh = date.getHours();
+        let mm = date.getMinutes();
+        let ss = date.getSeconds();
+
+        let hRotation = 30*hh + mm/2;
+    let mRotation = 6*mm;
+    let sRotation = 6*ss;
+    console.log(hRotation,mRotation,sRotation)
+
+        hr.style.transform = `rotate(${hRotation}deg)`;
+        min.style.transform = `rotate(${mRotation}deg)`;
+        sec.style.transform = `rotate(${sRotation}deg)`;
+
+        checkAlarm(hh, mm);
+      }
+
+      function checkAlarm(hour, minute) {
+        if (alarmTime && alarmTime.hour === hour && alarmTime.minute === minute) {
+          alarmAudio.play(); // Play alarm sound when time matches
+          alarmTime = null; // Reset alarm after triggering
+          setAlarmBtn.disabled = false; // Re-enable alarm set button
+        }
+      }
+
+      // Set alarm functionality
+      setAlarmBtn.addEventListener('click', function () {
+        let time = alarmTimeInput.value;
+        if (time) {
+          let [hour, minute] = time.split(':');
+          alarmTime = { hour: parseInt(hour), minute: parseInt(minute) };
+          setAlarmBtn.disabled = true; // Disable button after setting the alarm
+          console.log('Alarm set for ' + alarmTime.hour + ':' + alarmTime.minute); // Debugging log
+        }
+      });
+
+      setInterval(displayTime, 1000); // Update time every second
+    </script>
+  </body>
+</html>
